@@ -14,9 +14,7 @@ class SniffTest(AllenNlpTestCase):
 
         result = predictor.predict_json({"passage": passage, "question": question})
 
-        correct = (
-            "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano"
-        )
+        correct = "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano"
 
         assert correct == result["best_span_str"]
 
@@ -360,7 +358,9 @@ class SniffTest(AllenNlpTestCase):
         ]
         assert result["tags"] == ["B-PER", "L-PER", "O", "O", "O", "O", "U-LOC", "O"]
 
-    @pytest.mark.skipif(spacy.__version__ < "2.1", reason="this model changed from 2.0 to 2.1")
+    @pytest.mark.skipif(
+        spacy.__version__ < "2.1", reason="this model changed from 2.0 to 2.1"
+    )
     def test_constituency_parsing(self):
         predictor = pretrained.span_based_constituency_parsing_with_elmo_joshi_2018()
 
@@ -419,7 +419,10 @@ class SniffTest(AllenNlpTestCase):
         question = "How many years were held in summer?"
         result = predictor.predict_json({"table": table, "question": question})
         assert result["answer"] == 7
-        assert result["logical_form"][0] == "(count (filter_in all_rows string_column:season string:summer))"
+        assert (
+            result["logical_form"][0]
+            == "(count (filter_in all_rows string_column:season string:summer))"
+        )
 
     def test_nlvr_parser(self):
         predictor = pretrained.nlvr_parser_dasigi_2019()
@@ -441,9 +444,14 @@ class SniffTest(AllenNlpTestCase):
             ]
         ]"""
         sentence = "there is exactly one yellow object touching the edge"
-        result = predictor.predict_json({"structured_rep": structured_rep, "sentence": sentence})
+        result = predictor.predict_json(
+            {"structured_rep": structured_rep, "sentence": sentence}
+        )
         assert result["denotations"][0] == ["False"]
-        assert result["logical_form"][0] == "(object_count_equals (yellow (touch_wall all_objects)) 1)"
+        assert (
+            result["logical_form"][0]
+            == "(object_count_equals (yellow (touch_wall all_objects)) 1)"
+        )
 
     def test_atis_parser(self):
         predictor = pretrained.atis_parser()
@@ -471,10 +479,12 @@ class SniffTest(AllenNlpTestCase):
 
     def test_quarel_parser(self):
         predictor = pretrained.quarel_parser_tafjord_2019()
-        question = ("In his research, Joe is finding there is a lot more "
-                "diabetes in the city than out in the countryside. He "
-                "hypothesizes this is because people in _____ consume less "
-                "sugar. (A) city (B) countryside")
+        question = (
+            "In his research, Joe is finding there is a lot more "
+            "diabetes in the city than out in the countryside. He "
+            "hypothesizes this is because people in _____ consume less "
+            "sugar. (A) city (B) countryside"
+        )
         qrspec = """[sugar, +diabetes]
 [friction, -speed, -smoothness, -distance, +heat]
 [speed, -time]
@@ -506,6 +516,32 @@ strength: power, strong, weak, stronger, weaker
 thickness: thick, thin, thicker, thinner, skinny
 time: long, short
 weight: mass, heavy, light, heavier, lighter"""
-        result = predictor.predict_json({"question": question, "qrspec": qrspec, "entitycues": entitycues})
+        result = predictor.predict_json(
+            {"question": question, "qrspec": qrspec, "entitycues": entitycues}
+        )
         assert result["answer"] == "B"
-        assert result["explanation"] == [{'header': 'Identified two worlds', 'content': ['world1 = "city"', 'world2 = "countryside"']}, {'header': 'The question is stating', 'content': ['Diabetes is higher for "city"']}, {'header': 'The answer options are stating', 'content': ['A: Sugar is lower for "city"', 'B: Sugar is lower for "countryside"']}, {'header': 'Theory used', 'content': ['When diabetes is higher then sugar is higher (for "city")', 'Therefore sugar is lower for "countryside"', 'Therefore B is the correct answer']}]
+        assert result["explanation"] == [
+            {
+                "header": "Identified two worlds",
+                "content": ['world1 = "city"', 'world2 = "countryside"'],
+            },
+            {
+                "header": "The question is stating",
+                "content": ['Diabetes is higher for "city"'],
+            },
+            {
+                "header": "The answer options are stating",
+                "content": [
+                    'A: Sugar is lower for "city"',
+                    'B: Sugar is lower for "countryside"',
+                ],
+            },
+            {
+                "header": "Theory used",
+                "content": [
+                    'When diabetes is higher then sugar is higher (for "city")',
+                    'Therefore sugar is lower for "countryside"',
+                    "Therefore B is the correct answer",
+                ],
+            },
+        ]
