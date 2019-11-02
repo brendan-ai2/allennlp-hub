@@ -3,6 +3,7 @@ import warnings
 from allennlp import predictors
 from allennlp.predictors import Predictor
 from allennlp.models.archival import load_archive
+from allennlp_semparse import predictors as semparse_predictors
 
 
 class PretrainedModel:
@@ -23,7 +24,7 @@ class PretrainedModel:
 
 # TODO(Mark): Figure out a way to make PretrainedModel generic on Predictor, so we can remove these type ignores.
 
-# Models in the demo
+# Core AllenNLP models
 
 
 def srl_with_elmo_luheng_2018() -> predictors.SemanticRoleLabelerPredictor:
@@ -147,9 +148,6 @@ def biaffine_parser_stanford_dependencies_todzat_2017() -> predictors.BiaffineDe
         return model.predictor()  # type: ignore
 
 
-# Models not in the demo
-
-
 def biaffine_parser_universal_dependencies_todzat_2017() -> predictors.BiaffineDependencyParserPredictor:
     with warnings.catch_warnings():
         warnings.simplefilter(action="ignore", category=DeprecationWarning)
@@ -168,3 +166,40 @@ def esim_nli_with_elmo_chen_2017() -> predictors.DecomposableAttentionPredictor:
             "textual-entailment",
         )
         return model.predictor()  # type: ignore
+
+
+# AllenNLP Semparse models
+
+
+def wikitables_parser_dasigi_2019() -> semparse_predictors.WikiTablesParserPredictor:
+    model = PretrainedModel(
+        "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
+        "wikitables-parser",
+    )
+    return model.predictor()
+
+
+def nlvr_parser_dasigi_2019() -> semparse_predictors.NlvrParserPredictor:
+    model = PretrainedModel(
+        "https://storage.googleapis.com/allennlp-public-models/nlvr-erm-model-2018-12-18-rule-vocabulary-updated.tar.gz",
+        "nlvr-parser",
+    )
+    return model.predictor()
+
+
+# TODO(brendanr): It's not clear from https://demo.allennlp.org/atis-parser
+# whether there's a paper associated with this model. Verify this.
+def atis_parser() -> semparse_predictors.AtisParserPredictor:
+    model = PretrainedModel(
+        "https://storage.googleapis.com/allennlp-public-models/atis-parser-2018.11.10.tar.gz",
+        "atis-parser",
+    )
+    return model.predictor()
+
+
+def quarel_parser_tafjord_2019() -> semparse_predictors.QuarelParserPredictor:
+    model = PretrainedModel(
+        "https://storage.googleapis.com/allennlp-public-models/quarel-parser-zero-2018.12.20.tar.gz",
+        "quarel-parser",
+    )
+    return model.predictor()

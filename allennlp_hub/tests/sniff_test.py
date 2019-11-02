@@ -407,3 +407,27 @@ class SniffTest(AllenNlpTestCase):
             "punct",
         ]
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
+
+    def test_wikitables_parser(self):
+        predictor = pretrained.wikitables_parser_dasigi_2019()
+        question = "How many years were held in summer?"
+        table = """#	Event Year	Season	Flag bearer
+7	2012	Summer	Ele Opeloge
+6	2008	Summer	Ele Opeloge
+5	2004	Summer	Uati Maposua
+4	2000	Summer	Pauga Lalau
+3	1996	Summer	Bob Gasio
+2	1988	Summer	Henry Smith
+1	1984	Summer	Apelu Ioane"""
+        result = predictor.predict_json({"question": question, "table": table})
+        assert result["words"] == ["He", "ate", "spaghetti", "with", "chopsticks", "."]
+        assert result["pos"] == ["PRP", "VBD", "NNS", "IN", "NNS", "."]
+        assert result["predicted_dependencies"] == [
+            "nsubj",
+            "root",
+            "dobj",
+            "prep",
+            "pobj",
+            "punct",
+        ]
+        assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
