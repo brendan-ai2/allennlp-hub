@@ -5,6 +5,10 @@ from allennlp.predictors import Predictor
 from allennlp.models.archival import load_archive
 from allennlp_semparse import predictors as semparse_predictors
 
+# Ensure models are registered.
+import allennlp.models
+import allennlp_semparse.models
+
 
 class PretrainedModel:
     """
@@ -172,11 +176,13 @@ def esim_nli_with_elmo_chen_2017() -> predictors.DecomposableAttentionPredictor:
 
 
 def wikitables_parser_dasigi_2019() -> semparse_predictors.WikiTablesParserPredictor:
-    model = PretrainedModel(
-        "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
-        "wikitables-parser",
-    )
-    return model.predictor()
+    with warnings.catch_warnings():
+        warnings.simplefilter(action="ignore", category=DeprecationWarning)
+        model = PretrainedModel(
+            "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
+            "wikitables-parser",
+        )
+        return model.predictor()
 
 
 def nlvr_parser_dasigi_2019() -> semparse_predictors.NlvrParserPredictor:
