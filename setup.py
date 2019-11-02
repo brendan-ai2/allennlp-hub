@@ -37,7 +37,7 @@ if not os.environ.get("EXCLUDE_ALLENNLP_IN_SETUP"):
     # TODO(brendanr): Make these point to released versions.
     install_requirements = [
         "allennlp @ git+ssh://git@github.com/allenai/allennlp@master#egg=allennlp",
-        "allennlp @ git+ssh://git@github.com/allenai/allennlp-semparse@master#egg=allennlp-semparse"
+        "allennlp @ git+ssh://git@github.com/allenai/allennlp-semparse@master#egg=allennlp-semparse",
     ]
 
 # make pytest-runner a conditional requirement,
