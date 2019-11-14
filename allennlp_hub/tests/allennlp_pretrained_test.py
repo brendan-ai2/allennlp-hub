@@ -5,7 +5,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp_hub import pretrained
 
 
-class AllenNlpSniffTest(AllenNlpTestCase):
+class AllenNlpPretrainedTest(AllenNlpTestCase):
     def test_machine_comprehension(self):
         predictor = pretrained.bidirectional_attention_flow_seo_2017()
 

@@ -5,7 +5,7 @@ from allennlp.common.testing import AllenNlpTestCase
 from allennlp_hub import pretrained
 
 
-class AllenNlpSemparseSniffTest(AllenNlpTestCase):
+class AllenNlpSemparsePretrainedTest(AllenNlpTestCase):
     def test_wikitables_parser(self):
         predictor = pretrained.wikitables_parser_dasigi_2019()
         table = """#	Event Year	Season	Flag bearer
