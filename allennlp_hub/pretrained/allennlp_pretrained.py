@@ -1,5 +1,5 @@
 from allennlp import predictors
-from allennlp_hub.predictors.helpers import _load_predictor
+from allennlp_hub.pretrained.helpers import _load_predictor
 import allennlp.models
 
 
