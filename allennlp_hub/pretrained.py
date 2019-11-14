@@ -87,7 +87,7 @@ def neural_coreference_resolution_lee_2017() -> predictors.CorefPredictor:
             "coreference-resolution",
         )
 
-        predictor._dataset_reader._token_indexers[  # type: ignore
+        predictor._dataset_reader._token_indexers[
             "token_characters"
         ]._min_padding_length = 5
         return predictor
@@ -101,7 +101,7 @@ def named_entity_recognition_with_elmo_peters_2018() -> predictors.SentenceTagge
             "sentence-tagger",
         )
 
-        predictor._dataset_reader._token_indexers[  # type: ignore
+        predictor._dataset_reader._token_indexers[
             "token_characters"
         ]._min_padding_length = 3
         return predictor
@@ -113,7 +113,7 @@ def fine_grained_named_entity_recognition_with_elmo_peters_2018() -> predictors.
         "sentence-tagger",
     )
 
-    predictor._dataset_reader._token_indexers[  # type: ignore
+    predictor._dataset_reader._token_indexers[
         "token_characters"
     ]._min_padding_length = 3
     return predictor
