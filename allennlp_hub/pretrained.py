@@ -163,13 +163,11 @@ def esim_nli_with_elmo_chen_2017() -> predictors.DecomposableAttentionPredictor:
 
 
 def wikitables_parser_dasigi_2019() -> semparse_predictors.WikiTablesParserPredictor:
-    with warnings.catch_warnings():
-        warnings.simplefilter(action="ignore", category=DeprecationWarning)
-        predictor = load_predictor(
-            "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
-            "wikitables-parser",
-        )
-        return predictor
+    predictor = load_predictor(
+        "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
+        "wikitables-parser",
+    )
+    return predictor
 
 
 def nlvr_parser_dasigi_2019() -> semparse_predictors.NlvrParserPredictor:
