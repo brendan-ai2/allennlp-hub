@@ -10,7 +10,7 @@ import allennlp.models
 import allennlp_semparse.models
 
 
-def load_predictor(archive_file: str, predictor_name: str) -> Predictor:
+def _load_predictor(archive_file: str, predictor_name: str) -> Predictor:
     """
     Helper to load the desired predictor from the given archive.
     """
@@ -22,7 +22,7 @@ def load_predictor(archive_file: str, predictor_name: str) -> Predictor:
 
 
 def srl_with_elmo_luheng_2018() -> predictors.SemanticRoleLabelerPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/srl-model-2018.05.25.tar.gz",
         "semantic-role-labeling",
     )
@@ -30,7 +30,7 @@ def srl_with_elmo_luheng_2018() -> predictors.SemanticRoleLabelerPredictor:
 
 
 def bert_srl_shi_2019() -> predictors.SemanticRoleLabelerPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://s3-us-west-2.amazonaws.com/allennlp/models/bert-base-srl-2019.06.17.tar.gz",
         "semantic-role-labeling",
     )
@@ -38,7 +38,7 @@ def bert_srl_shi_2019() -> predictors.SemanticRoleLabelerPredictor:
 
 
 def bidirectional_attention_flow_seo_2017() -> predictors.BidafPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/bidaf-model-2017.09.15-charpad.tar.gz",
         "machine-comprehension",
     )
@@ -46,7 +46,7 @@ def bidirectional_attention_flow_seo_2017() -> predictors.BidafPredictor:
 
 
 def naqanet_dua_2019() -> predictors.BidafPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/naqanet-2019.04.29-fixed-weight-names.tar.gz",
         "machine-comprehension",
     )
@@ -54,7 +54,7 @@ def naqanet_dua_2019() -> predictors.BidafPredictor:
 
 
 def open_information_extraction_stanovsky_2018() -> predictors.OpenIePredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/openie-model.2018-08-20.tar.gz",
         "open-information-extraction",
     )
@@ -62,7 +62,7 @@ def open_information_extraction_stanovsky_2018() -> predictors.OpenIePredictor:
 
 
 def decomposable_attention_with_elmo_parikh_2017() -> predictors.DecomposableAttentionPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/decomposable-attention-elmo-2018.02.19.tar.gz",
         "textual-entailment",
     )
@@ -70,7 +70,7 @@ def decomposable_attention_with_elmo_parikh_2017() -> predictors.DecomposableAtt
 
 
 def neural_coreference_resolution_lee_2017() -> predictors.CorefPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/coref-model-2018.02.05.tar.gz",
         "coreference-resolution",
     )
@@ -82,7 +82,7 @@ def neural_coreference_resolution_lee_2017() -> predictors.CorefPredictor:
 
 
 def named_entity_recognition_with_elmo_peters_2018() -> predictors.SentenceTaggerPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/ner-model-2018.12.18.tar.gz",
         "sentence-tagger",
     )
@@ -94,7 +94,7 @@ def named_entity_recognition_with_elmo_peters_2018() -> predictors.SentenceTagge
 
 
 def fine_grained_named_entity_recognition_with_elmo_peters_2018() -> predictors.SentenceTaggerPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/fine-grained-ner-model-elmo-2018.12.21.tar.gz",
         "sentence-tagger",
     )
@@ -106,7 +106,7 @@ def fine_grained_named_entity_recognition_with_elmo_peters_2018() -> predictors.
 
 
 def span_based_constituency_parsing_with_elmo_joshi_2018() -> predictors.ConstituencyParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/elmo-constituency-parser-2018.03.14.tar.gz",
         "constituency-parser",
     )
@@ -114,7 +114,7 @@ def span_based_constituency_parsing_with_elmo_joshi_2018() -> predictors.Constit
 
 
 def biaffine_parser_stanford_dependencies_todzat_2017() -> predictors.BiaffineDependencyParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/biaffine-dependency-parser-ptb-2018.08.23.tar.gz",
         "biaffine-dependency-parser",
     )
@@ -122,7 +122,7 @@ def biaffine_parser_stanford_dependencies_todzat_2017() -> predictors.BiaffineDe
 
 
 def biaffine_parser_universal_dependencies_todzat_2017() -> predictors.BiaffineDependencyParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/biaffine-dependency-parser-ud-2018.08.23.tar.gz",
         "biaffine-dependency-parser",
     )
@@ -130,7 +130,7 @@ def biaffine_parser_universal_dependencies_todzat_2017() -> predictors.BiaffineD
 
 
 def esim_nli_with_elmo_chen_2017() -> predictors.DecomposableAttentionPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://allennlp.s3.amazonaws.com/models/esim-elmo-2018.05.17.tar.gz",
         "textual-entailment",
     )
@@ -141,7 +141,7 @@ def esim_nli_with_elmo_chen_2017() -> predictors.DecomposableAttentionPredictor:
 
 
 def wikitables_parser_dasigi_2019() -> semparse_predictors.WikiTablesParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/wikitables-model-2019.07.29.tar.gz",
         "wikitables-parser",
     )
@@ -149,7 +149,7 @@ def wikitables_parser_dasigi_2019() -> semparse_predictors.WikiTablesParserPredi
 
 
 def nlvr_parser_dasigi_2019() -> semparse_predictors.NlvrParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/nlvr-erm-model-2018-12-18-rule-vocabulary-updated.tar.gz",
         "nlvr-parser",
     )
@@ -157,7 +157,7 @@ def nlvr_parser_dasigi_2019() -> semparse_predictors.NlvrParserPredictor:
 
 
 def atis_parser_lin_2019() -> semparse_predictors.AtisParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/atis-parser-2018.11.10.tar.gz",
         "atis-parser",
     )
@@ -165,7 +165,7 @@ def atis_parser_lin_2019() -> semparse_predictors.AtisParserPredictor:
 
 
 def quarel_parser_tafjord_2019() -> semparse_predictors.QuarelParserPredictor:
-    predictor = load_predictor(
+    predictor = _load_predictor(
         "https://storage.googleapis.com/allennlp-public-models/quarel-parser-zero-2018.12.20.tar.gz",
         "quarel-parser",
     )
