@@ -1,20 +1,6 @@
-import warnings
-
-from allennlp import predictors
-from allennlp.predictors import Predictor
-from allennlp.models.archival import load_archive
+from allennlp_hub.predictors.helpers import _load_predictor
 from allennlp_semparse import predictors as semparse_predictors
-
-# Ensure models are registered.
 import allennlp_semparse.models
-
-
-def _load_predictor(archive_file: str, predictor_name: str) -> Predictor:
-    """
-    Helper to load the desired predictor from the given archive.
-    """
-    archive = load_archive(archive_file)
-    return Predictor.from_archive(archive, predictor_name)
 
 
 # AllenNLP Semparse models
