@@ -18,7 +18,7 @@ def load_predictor(archive_file: str, predictor_name: str) -> Predictor:
     return Predictor.from_archive(archive, predictor_name)
 
 
-# Core AllenNLP models
+# Models in the main repo
 
 
 def srl_with_elmo_luheng_2018() -> predictors.SemanticRoleLabelerPredictor:
