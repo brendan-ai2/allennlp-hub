@@ -454,7 +454,7 @@ class SniffTest(AllenNlpTestCase):
         )
 
     def test_atis_parser(self):
-        predictor = pretrained.atis_parser()
+        predictor = pretrained.atis_parser_lin_2019()
         utterance = "give me flights on american airlines from milwaukee to phoenix"
         result = predictor.predict_json({"utterance": utterance})
         predicted_sql_query = """
