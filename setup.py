@@ -43,7 +43,7 @@ if not os.environ.get("EXCLUDE_ALLENNLP_IN_SETUP"):
     semparse_sha = "937d5945488a33c61d0047bd74d8106e60340bbd"
     install_requirements = [
         "allennlp @ git+ssh://git@github.com/allenai/allennlp@{allennlp_sha}#egg=allennlp",
-        "allennlp @ git+ssh://git@github.com/allenai/allennlp-semparse@{semparse_sha}#egg=allennlp-semparse",
+        "allennlp_semparse @ git+ssh://git@github.com/allenai/allennlp-semparse@{semparse_sha}#egg=allennlp-semparse",
     ]
 
 # make pytest-runner a conditional requirement,
