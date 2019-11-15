@@ -10,13 +10,15 @@ WORKDIR /stage
 
 # Copy requirements file first so we can install them and get better caching
 # from Docker.
-RUN mkdir allennlp-hub
-COPY allennlp-hub/requirements.txt allennlp-hub/requirements.txt
+COPY requirements.txt requirements.txt
 
-RUN pip install -r allennlp-hub/requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy remaining files and install package.
-COPY allennlp-hub allennlp-hub
-RUN pip install --editable allennlp-hub
+COPY README.md README.md
+COPY allennlp_hub allennlp_hub
+COPY setup.py setup.py
+COPY tests tests
+RUN pip install --editable .
 
 CMD ["/bin/bash"]
