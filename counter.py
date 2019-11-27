@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 # Replaces every callable in the module with a wrapper that keeps track of how
 # often it's called.
@@ -27,7 +27,13 @@ import spacy
 from allennlp_hub import pretrained
 
 
-class Counter:
+def count_pytorch_modules(module):
+    names = [f"{sub.__class__.__module__}.{sub.__class__.__name__}" for sub in module.modules()]
+    counter = Counter(names)
+    return counter
+
+
+class TestCases:
     def test_machine_comprehension(self):
         predictor = pretrained.bidirectional_attention_flow_seo_2017()
 
@@ -39,6 +45,7 @@ class Counter:
         correct = "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano"
 
         assert correct == result["best_span_str"]
+        return predictor
 
     def test_semantic_role_labeling(self):
         predictor = pretrained.srl_with_elmo_luheng_2018()
@@ -208,6 +215,7 @@ class Counter:
                 ],
             },
         ]
+        return predictor
 
     def test_textual_entailment(self):
         predictor = pretrained.decomposable_attention_with_elmo_parikh_2017()
@@ -238,6 +246,7 @@ class Counter:
         )
 
         assert result["label_probs"][2] > 0.6  # neutral
+        return predictor
 
     def test_coreference_resolution(self):
         predictor = pretrained.neural_coreference_resolution_lee_2017()
@@ -306,6 +315,7 @@ class Counter:
             "holes",
             ".",
         ]
+        return predictor
 
     def test_ner(self):
         predictor = pretrained.named_entity_recognition_with_elmo_peters_2018()
@@ -325,6 +335,7 @@ class Counter:
             ".",
         ]
         assert result["tags"] == ["B-PER", "L-PER", "O", "O", "O", "O", "U-LOC", "O"]
+        return predictor
 
     def test_constituency_parsing(self):
         predictor = pretrained.span_based_constituency_parsing_with_elmo_joshi_2018()
@@ -349,6 +360,7 @@ class Counter:
             result["trees"]
             == "(S (NP (NNP Pierre) (NNP Vinken)) (VP (VP (VBD died) (NP (JJ aged) (CD 81))) (, ;) (VP (VBN immortalised) (S (ADJP (JJ aged) (CD 61))))) (. .))"
         )
+        return predictor
 
     def test_dependency_parsing(self):
         predictor = pretrained.biaffine_parser_stanford_dependencies_todzat_2017()
@@ -370,6 +382,7 @@ class Counter:
             "punct",
         ]
         assert result["predicted_heads"] == [2, 0, 2, 2, 4, 2]
+        return predictor
 
     def test_wikitables_parser(self):
         predictor = pretrained.wikitables_parser_dasigi_2019()
@@ -389,6 +402,7 @@ class Counter:
         #    result["logical_form"][0]
         #    == "(count (filter_in all_rows string_column:season string:summer))"
         #)
+        return predictor
 
     def test_nlvr_parser(self):
         predictor = pretrained.nlvr_parser_dasigi_2019()
@@ -418,6 +432,7 @@ class Counter:
             result["logical_form"][0]
             == "(object_count_equals (yellow (touch_wall all_objects)) 1)"
         )
+        return predictor
 
     def test_atis_parser(self):
         predictor = pretrained.atis_parser_lin_2019()
@@ -442,6 +457,7 @@ class Counter:
                        FROM city
                        WHERE city . city_name = 'PHOENIX' ) ))) ) ;"""
         assert result["predicted_sql_query"] == predicted_sql_query
+        return predictor
 
     def test_quarel_parser(self):
         predictor = pretrained.quarel_parser_tafjord_2019()
@@ -511,13 +527,33 @@ weight: mass, heavy, light, heavier, lighter"""
                 ],
             },
         ]
+        return predictor
 
 
 def main():
-    counter = Counter()
-    for attr in dir(counter):
+    test_cases = TestCases()
+    info = {}
+    for attr in dir(test_cases):
         if attr.startswith("test"):
-            getattr(counter, attr)()
+            # Zero global counter state
+            functional.__allennlp_call_counter = defaultdict(int)
+            predictor = getattr(test_cases, attr)()
+            model = predictor._model
+            info[attr] = (
+                    count_pytorch_modules(model),
+                    Counter(functional.__allennlp_call_counter)
+            )
+    print("\n\n\n\n\n\n\n")
+    for name, counters in info.items():
+        module_counters, functional_counters = counters
+        print(f"{name}\n")
+        print(f"\nMODULES\n")
+        for count in module_counters.most_common(10):
+            print(f"{count}\n")
+        print(f"\nFUNCTIONAL\n")
+        for count in functional_counters.most_common(10):
+            print(f"{count}\n")
+
 
 if __name__ == "__main__":
         main()
