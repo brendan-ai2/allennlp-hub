@@ -1,24 +1,26 @@
-#from collections import defaultdict
-#
-#def install_hooks(module):
-#    module.__allennlp_call_counter = defaultdict(int)
-#    for attr in dir(module):
-#        original = getattr(module, attr)
-#        if not callable(original):
-#            continue
-#        # Introduce extra scope as Python is a joke of a language.
-#        def python_sucks(attr, original):
-#            def replacement(*args, **kwargs):
-#                module.__allennlp_call_counter[attr] += 1
-#                return original(*args, **kwargs)
-#            return replacement
-#        replacement = python_sucks(attr, original)
-#        setattr(module, attr, replacement)
-#
-## Install the hooks before we load the models on the off-chance somebody caches
-## a function pointer during module initialization.
-#from torch.nn import functional
-#install_hooks(functional)
+from collections import defaultdict
+
+# Replaces every callable in the module with a wrapper that keeps track of how
+# often it's called.
+def install_hooks(module):
+    module.__allennlp_call_counter = defaultdict(int)
+    for attr in dir(module):
+        original = getattr(module, attr)
+        if not callable(original):
+            continue
+        # Introduce extra scope as Python is a joke of a language.
+        def python_sucks(attr, original):
+            def replacement(*args, **kwargs):
+                module.__allennlp_call_counter[attr] += 1
+                return original(*args, **kwargs)
+            return replacement
+        replacement = python_sucks(attr, original)
+        setattr(module, attr, replacement)
+
+# Install the hooks before we load the models on the off-chance somebody caches
+# a function pointer during module initialization.
+from torch.nn import functional
+install_hooks(functional)
 
 
 import spacy
