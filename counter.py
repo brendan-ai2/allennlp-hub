@@ -540,14 +540,14 @@ def main():
             predictor = getattr(test_cases, attr)()
             model = predictor._model
             name = attr[len("test_"):]
-            info[attr] = (
+            info[name] = (
                     count_pytorch_modules(model),
                     Counter(functional.__allennlp_call_counter)
             )
     print("\n\n\n\n\n\n\n")
     for name, counters in info.items():
         module_counters, functional_counters = counters
-        print(f"MODEL: {name}")
+        print(f"\nMODEL: {name}")
         print(f"\nMODULES")
         for count in module_counters.most_common(10):
             print(f"{count}")
