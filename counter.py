@@ -546,13 +546,13 @@ def main():
     print("\n\n\n\n\n\n\n")
     for name, counters in info.items():
         module_counters, functional_counters = counters
-        print(f"{name}\n")
-        print(f"\nMODULES\n")
+        print(f"{name}")
+        print(f"\nMODULES")
         for count in module_counters.most_common(10):
-            print(f"{count}\n")
-        print(f"\nFUNCTIONAL\n")
+            print(f"{count}")
+        print(f"\nFUNCTIONAL")
         for count in functional_counters.most_common(10):
-            print(f"{count}\n")
+            print(f"{count}")
 
 
 if __name__ == "__main__":
