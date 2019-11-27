@@ -8,13 +8,15 @@ def install_hooks(module):
         original = getattr(module, attr)
         if not callable(original):
             continue
-        # Introduce extra scope as Python is a joke of a language.
-        def python_sucks(attr, original):
+        # Introduce extra scope as otherwise the variables attr and original as
+        # captured by the replacement closure will be modified by subsequent
+        # iterations.  This is due to Python's peculiar scoping rules.
+        def add_scope(attr, original):
             def replacement(*args, **kwargs):
                 module.__allennlp_call_counter[attr] += 1
                 return original(*args, **kwargs)
             return replacement
-        replacement = python_sucks(attr, original)
+        replacement = add_scope(attr, original)
         setattr(module, attr, replacement)
 
 # Install the hooks before we load the models on the off-chance somebody caches
