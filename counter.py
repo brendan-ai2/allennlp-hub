@@ -1,3 +1,6 @@
+# Simple script that counts Pytorch operations for our pretrained models given
+# their sample inputs.
+
 from collections import Counter, defaultdict
 
 # Replaces every callable in the module with a wrapper that keeps track of how
@@ -5,6 +8,13 @@ from collections import Counter, defaultdict
 def install_hooks(module):
     module.__allennlp_call_counter = defaultdict(int)
     for attr in dir(module):
+        # Skip private members. If we don't do this, we'll try to wrap
+        # __class__ which produces an error. More philosophically, we should
+        # probably only be trying to compute flops for operations that have
+        # some publically defined interface.
+        # TODO(brendanr): Skip protected members too?
+        if attr.startswith("__"):
+            continue
         original = getattr(module, attr)
         if not callable(original):
             continue
@@ -21,6 +31,8 @@ def install_hooks(module):
 # a function pointer during module initialization.
 from torch.nn import functional
 install_hooks(functional)
+from torch import Tensor
+install_hooks(Tensor)
 
 
 import spacy
@@ -33,6 +45,7 @@ def count_pytorch_modules(module):
     return counter
 
 
+# Copied rather crudely from tests.
 class TestCases:
     def test_machine_comprehension(self):
         predictor = pretrained.bidirectional_attention_flow_seo_2017()
@@ -537,22 +550,27 @@ def main():
         if attr.startswith("test_"):
             # Zero global counter state
             functional.__allennlp_call_counter = defaultdict(int)
+            Tensor.__allennlp_call_counter = defaultdict(int)
             predictor = getattr(test_cases, attr)()
             model = predictor._model
             name = attr[len("test_"):]
             info[name] = (
                     count_pytorch_modules(model),
-                    Counter(functional.__allennlp_call_counter)
+                    Counter(functional.__allennlp_call_counter),
+                    Counter(Tensor.__allennlp_call_counter),
             )
     print("\n\n\n\n\n\n\n")
     for name, counters in info.items():
-        module_counters, functional_counters = counters
+        module_counters, functional_counters, tensor_counters = counters
         print(f"\nMODEL: {name}")
         print(f"\nMODULES")
-        for count in module_counters.most_common(10):
+        for count in module_counters.most_common():
             print(f"{count}")
         print(f"\nFUNCTIONAL")
-        for count in functional_counters.most_common(10):
+        for count in functional_counters.most_common():
+            print(f"{count}")
+        print(f"\nTENSOR")
+        for count in tensor_counters.most_common():
             print(f"{count}")
 
 
