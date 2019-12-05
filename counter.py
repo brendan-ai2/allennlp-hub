@@ -40,25 +40,40 @@ install_hooks(Tensor)
 import spacy
 from allennlp_hub import pretrained
 
-
 def count_pytorch_modules(module):
     names = [f"{sub.__class__.__module__}.{sub.__class__.__name__}" for sub in module.modules()]
     counter = Counter(names)
     return counter
 
+
+class Hook:
+    """ Wrapper class for arbitrary functions allowing us to distinguish our hooks from others'. """
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
+
+def is_already_hooked(module):
+    """ Whether a module has a forward hook of type Hook. """
+    for hook in module._forward_hooks.values():
+        if isinstance(hook, Hook):
+            return True
+    return False
+
 def install_pytorch_module_hooks(module):
     module.__allennlp_call_counter = defaultdict(int)
     for sub in module.modules():
         sub_name = f"{sub.__class__.__module__}.{sub.__class__.__name__}.forward"
-        # Ensure we aren't double counting. This will fail if a model
-        # internally adds a hook. This should be rare.
-        assert not sub._forward_hooks
+        # Ensure we aren't double counting.
+        if is_already_hooked(sub):
+            continue
         # See note in install_hooks.
         def add_scope(sub_name):
             def hook(*args, **kwargs):
                 module.__allennlp_call_counter[sub_name] += 1
             return hook
-        hook = add_scope(sub_name)
+        hook = Hook(add_scope(sub_name))
         sub.register_forward_hook(hook)
 
 # Copied rather crudely from tests.
@@ -546,24 +561,31 @@ def main():
     info = {}
     for predictor, func, name in PREDICTORS_EXAMPLES_AND_NAMES:
         model = predictor._model
+        install_pytorch_module_hooks(model)
+
         # Zero global counter state
         functional.__allennlp_call_counter = defaultdict(int)
         Tensor.__allennlp_call_counter = defaultdict(int)
+        model.__allennlp_call_counter = defaultdict(int)
 
         # Make the call to accumulate the counts.
         func(predictor)
 
         info[name] = (
                 count_pytorch_modules(model),
+                Counter(model.__allennlp_call_counter),
                 Counter(functional.__allennlp_call_counter),
                 Counter(Tensor.__allennlp_call_counter),
         )
     print("\n\n\n\n\n\n\n")
     for name, counters in info.items():
-        module_counters, functional_counters, tensor_counters = counters
+        module_counters, forward_counters, functional_counters, tensor_counters = counters
         print(f"\nMODEL: {name}")
         print(f"\nMODULES")
         for count in module_counters.most_common():
+            print(f"{count}")
+        print(f"\nFORWARD")
+        for count in forward_counters.most_common():
             print(f"{count}")
         print(f"\nFUNCTIONAL")
         for count in functional_counters.most_common():
